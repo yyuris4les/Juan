@@ -1,11 +1,736 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>juan</title>
+<meta charset="UTF-8">
+<!-- FIX: Removido maximum-scale=1.0 — bloqueava zoom de acessibilidade -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Briefing de Projeto — Juan Esquivel Arquitetura</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  /* ── DESIGN TOKENS ───────────────────────────────────── */
+  :root {
+    --stone:      #D9CFC0;
+    --ink:        #1A1714;
+    --gold:       #B89A6A;
+    --gold-light: #D4B896;
+    --warm-white: #FDFAF6;
+    --muted:      #7A6F64;
+    --border:     #E0D6C8;
+    --page-x:     clamp(16px, 5vw, 40px);
+    --page-max:   760px;
+  }
+
+  /* ── RESET ───────────────────────────────────────────── */
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--warm-white);
+    color: var(--ink);
+    min-height: 100vh;
+    overflow-x: hidden;
+    /* FIX: adicionado versão sem vendor prefix */
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  /* ── HEADER ──────────────────────────────────────────── */
+  header {
+    background: var(--ink);
+    padding: clamp(32px, 6vw, 60px) var(--page-x) clamp(28px, 5vw, 50px);
+    position: relative;
+    overflow: hidden;
+  }
+  header::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      90deg,
+      transparent, transparent 80px,
+      rgba(184,154,106,0.05) 80px,
+      rgba(184,154,106,0.05) 81px
+    );
+    pointer-events: none;
+  }
+  header::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: var(--page-x);
+    right: var(--page-x);
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  }
+
+  .header-inner {
+    max-width: var(--page-max);
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+  }
+
+  .brand-line {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: clamp(18px, 3vw, 28px);
+  }
+  .brand-mark {
+    width: 28px; height: 28px; min-width: 28px;
+    border: 1.5px solid var(--gold);
+    transform: rotate(45deg);
+    position: relative;
+    flex-shrink: 0;
+  }
+  .brand-mark::after {
+    content: '';
+    position: absolute;
+    inset: 5px;
+    border: 1px solid rgba(184,154,106,0.4);
+  }
+  .brand-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(10px, 2.5vw, 13px);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    font-weight: 500;
+    line-height: 1.4;
+  }
+
+  header h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(26px, 7vw, 52px);
+    font-weight: 300;
+    line-height: 1.1;
+    color: var(--warm-white);
+    letter-spacing: -0.01em;
+    margin-bottom: clamp(8px, 2vw, 16px);
+  }
+  header h1 em { font-style: italic; color: var(--gold-light); }
+
+  header p {
+    color: rgba(253,250,246,0.5);
+    font-size: clamp(12px, 2.5vw, 13px);
+    font-weight: 300;
+    letter-spacing: 0.04em;
+    line-height: 1.7;
+    max-width: 420px;
+  }
+
+  /* ── MAIN ────────────────────────────────────────────── */
+  main {
+    max-width: var(--page-max);
+    margin: 0 auto;
+    padding: clamp(32px, 5vw, 60px) var(--page-x) clamp(48px, 8vw, 80px);
+  }
+
+  /* ── SECTIONS ────────────────────────────────────────── */
+  .section {
+    margin-bottom: clamp(36px, 6vw, 52px);
+    animation: fadeUp 0.5s ease both;
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .section:nth-child(1) { animation-delay: 0.05s; }
+  .section:nth-child(2) { animation-delay: 0.10s; }
+  .section:nth-child(3) { animation-delay: 0.15s; }
+  .section:nth-child(4) { animation-delay: 0.20s; }
+  .section:nth-child(5) { animation-delay: 0.25s; }
+  .section:nth-child(6) { animation-delay: 0.30s; }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: clamp(18px, 3vw, 28px);
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--border);
+  }
+  .section-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    color: var(--gold);
+    font-weight: 500;
+    flex-shrink: 0;
+  }
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(15px, 3.5vw, 20px);
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--ink);
+    line-height: 1.2;
+  }
+
+  /* ── FIELD ───────────────────────────────────────────── */
+  .field { margin-bottom: clamp(16px, 3vw, 24px); }
+
+  .field > label:first-child {
+    display: block;
+    font-size: clamp(10px, 2.2vw, 11.5px);
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+    line-height: 1.5;
+    cursor: pointer;
+  }
+  .req { color: var(--gold); margin-left: 2px; }
+
+  /* ── INPUTS ──────────────────────────────────────────── */
+  /* FIX: bloco .text-input morto removido — era duplicata nunca usada no HTML.
+     Estilos unificados aqui em um único seletor canônico.           */
+  .field input[type="text"],
+  .field input[type="email"],
+  .field input[type="tel"],
+  .field textarea {
+    width: 100%;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--stone);
+    padding: 12px 0;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px; /* 16px evita zoom automático no iOS */
+    font-weight: 300;
+    color: var(--ink);
+    outline: none;
+    transition: border-color 0.25s;
+    -webkit-appearance: none;
+    appearance: none;
+    border-radius: 0;
+    touch-action: manipulation;
+  }
+  /* Telas maiores podem usar 15px sem risco de zoom */
+  @media (min-width: 600px) {
+    .field input[type="text"],
+    .field input[type="email"],
+    .field input[type="tel"],
+    .field textarea { font-size: 15px; }
+  }
+
+  .field input:focus,
+  .field textarea:focus   { border-bottom-color: var(--gold); }
+  .field input::placeholder,
+  .field textarea::placeholder { color: var(--stone); }
+  .field textarea { resize: vertical; min-height: 76px; line-height: 1.6; }
+
+  /* FIX: .outro-inline usava !important para sobrescrever width/padding.
+     Resolvido aumentando especificidade — sem !important. */
+  .outro-inline.opt input[type="text"] {
+    width: auto;
+    flex: 1;
+    min-width: 80px;
+    max-width: 180px;
+    padding: 8px 0;
+  }
+
+  /* FIX: margin-top do campo pets_quais saiu do inline style e entrou no CSS */
+  .pets-extra { margin-top: 12px; }
+
+  /* ── 2-COL GRID ──────────────────────────────────────── */
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 clamp(16px, 4vw, 32px);
+  }
+  @media (max-width: 540px) { .grid-2 { grid-template-columns: 1fr; } }
+
+  /* ── RADIO / CHECKBOX ────────────────────────────────── */
+  .options-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 16px;
+    margin-top: 4px;
+  }
+
+  .opt {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    min-height: 44px; /* tap target mínimo */
+    padding: 4px 0;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+
+  /* Inputs nativos escondidos visualmente mas acessíveis */
+  .opt input[type="radio"],
+  .opt input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    width: 0; height: 0;
+    pointer-events: none;
+  }
+
+  .opt .box {
+    width: 18px; height: 18px; min-width: 18px;
+    border: 1.5px solid var(--stone);
+    border-radius: 2px;
+    background: transparent;
+    position: relative;
+    transition: border-color 0.2s, background 0.2s;
+    flex-shrink: 0;
+  }
+  .opt input[type="radio"]  ~ .box { border-radius: 50%; }
+  .opt input:checked        ~ .box { background: var(--gold); border-color: var(--gold); }
+  .opt input[type="radio"]:checked ~ .box::after {
+    content: '';
+    position: absolute;
+    inset: 4px;
+    background: white;
+    border-radius: 50%;
+  }
+  .opt input[type="checkbox"]:checked ~ .box::after {
+    content: '✓';
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 10px;
+    color: white;
+    font-weight: 700;
+  }
+
+  .opt span:not(.box) {
+    font-size: clamp(13px, 3vw, 14px);
+    font-weight: 300;
+    color: var(--ink);
+    user-select: none;
+    line-height: 1.4;
+  }
+
+  .opt:hover .box,
+  .opt:focus-within .box { border-color: var(--gold); }
+
+  .outro-inline {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  /* ── DIVIDER ─────────────────────────────────────────── */
+  .divider {
+    height: 1px;
+    background: linear-gradient(90deg, var(--gold), transparent);
+    margin: clamp(28px, 5vw, 48px) 0;
+    opacity: 0.4;
+  }
+
+  /* ── SUBMIT ──────────────────────────────────────────── */
+  .submit-area {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 20px;
+    padding-top: 8px;
+    animation: fadeUp 0.5s ease 0.4s both;
+  }
+  .submit-note {
+    font-size: clamp(11px, 2.5vw, 12px);
+    color: var(--muted);
+    font-weight: 300;
+    letter-spacing: 0.03em;
+    line-height: 1.7;
+  }
+
+  button[type="submit"] {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    background: var(--ink);
+    color: var(--warm-white);
+    border: none;
+    padding: clamp(14px, 3vw, 16px) clamp(22px, 5vw, 36px);
+    font-family: 'DM Sans', sans-serif;
+    font-size: clamp(11px, 2.5vw, 12px);
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: transform 0.15s;
+    position: relative;
+    overflow: hidden;
+    min-height: 52px;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+  button[type="submit"]::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--gold);
+    transform: translateX(-100%);
+    transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 0;
+  }
+  @media (hover: hover) {
+    button[type="submit"]:hover::after { transform: translateX(0); }
+    button[type="submit"]:hover        { transform: translateY(-1px); }
+    button[type="submit"]:hover .btn-arrow { transform: translateX(4px); }
+  }
+  .btn-label,
+  .btn-arrow { position: relative; z-index: 1; }
+  .btn-arrow { font-size: 16px; transition: transform 0.2s; }
+
+  @media (max-width: 480px) {
+    .submit-area { flex-direction: column; align-items: stretch; }
+    button[type="submit"] { width: 100%; }
+  }
+
+  /* ── SUCCESS ─────────────────────────────────────────── */
+  .success-msg {
+    display: none;
+    background: var(--ink);
+    padding: clamp(24px, 5vw, 36px) clamp(20px, 5vw, 36px);
+    text-align: center;
+    margin-top: 32px;
+  }
+  .success-msg h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(20px, 4vw, 26px);
+    font-weight: 400;
+    color: var(--warm-white);
+    margin-bottom: 8px;
+  }
+  .success-msg p { font-size: 13px; color: var(--gold-light); font-weight: 300; }
+
+  /* ── FOOTER ──────────────────────────────────────────── */
+  footer {
+    text-align: center;
+    padding: clamp(18px, 4vw, 28px) var(--page-x) clamp(24px, 5vw, 40px);
+    font-size: clamp(9px, 2vw, 11px);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--stone);
+  }
+</style>
 </head>
 <body>
-    
+
+<header>
+  <div class="header-inner">
+    <div class="brand-line">
+      <div class="brand-mark" aria-hidden="true"></div>
+      <span class="brand-name">Juan Esquivel — Arquitetura & Interiores</span>
+    </div>
+    <h1>Briefing de <em>Projeto</em></h1>
+    <p>Preencha o formulário com cuidado. Cada detalhe nos ajuda a construir um projeto verdadeiramente seu.</p>
+  </div>
+</header>
+
+<main>
+  <form id="briefingForm" action="https://formspree.io/f/arq.juanesquivel@gmail.com" method="POST" novalidate>
+
+    <!-- Anti-spam honeypot -->
+    <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off">
+    <input type="hidden" name="_subject" value="Novo Briefing de Projeto — Juan Esquivel">
+    <input type="hidden" name="_replyto" id="replyEmail">
+
+    <!-- ── 01 DADOS DO CLIENTE ───────────────────────────── -->
+    <div class="section">
+      <div class="section-header">
+        <span class="section-num">01</span>
+        <span class="section-title">Dados do Cliente</span>
+      </div>
+
+      <div class="grid-2">
+        <div class="field">
+          <!-- FIX: todos os labels agora têm for/id — click no label foca o campo -->
+          <label for="nome_completo">Nome Completo <span class="req">*</span></label>
+          <input type="text" id="nome_completo" name="nome_completo"
+                 placeholder="Seu nome completo" required autocomplete="name">
+        </div>
+        <div class="field">
+          <label for="telefone">Telefone / WhatsApp <span class="req">*</span></label>
+          <input type="tel" id="telefone" name="telefone"
+                 placeholder="(00) 00000-0000" required autocomplete="tel">
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="field">
+          <label for="email">E-mail <span class="req">*</span></label>
+          <input type="email" id="email" name="email"
+                 placeholder="seu@email.com" required autocomplete="email">
+        </div>
+        <div class="field">
+          <label for="endereco">Endereço do Imóvel</label>
+          <input type="text" id="endereco" name="endereco"
+                 placeholder="Rua, número, bairro, cidade" autocomplete="street-address">
+        </div>
+      </div>
+    </div>
+
+    <!-- ── 02 PERFIL DOS USUÁRIOS ────────────────────────── -->
+    <div class="section">
+      <div class="section-header">
+        <span class="section-num">02</span>
+        <span class="section-title">Perfil dos Usuários</span>
+      </div>
+
+      <div class="grid-2">
+        <div class="field">
+          <label for="num_pessoas">Quantas pessoas utilizam o espaço?</label>
+          <input type="text" id="num_pessoas" name="num_pessoas" placeholder="Ex: 4 pessoas">
+        </div>
+        <div class="field">
+          <label for="idades">Idades</label>
+          <input type="text" id="idades" name="idades" placeholder="Ex: 35, 33, 7 e 4 anos">
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Possui crianças?</label>
+        <div class="options-row" role="group" aria-label="Possui crianças?">
+          <label class="opt"><input type="radio" name="criancas" value="Sim"><span class="box"></span><span>Sim</span></label>
+          <label class="opt"><input type="radio" name="criancas" value="Não"><span class="box"></span><span>Não</span></label>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Possui pets?</label>
+        <div class="options-row" role="group" aria-label="Possui pets?">
+          <label class="opt"><input type="radio" name="pets_yn" value="Sim"><span class="box"></span><span>Sim</span></label>
+          <label class="opt"><input type="radio" name="pets_yn" value="Não"><span class="box"></span><span>Não</span></label>
+        </div>
+        <!-- FIX: margin-top saiu do inline style e foi para a classe .pets-extra no CSS -->
+        <input type="text" id="pets_quais" name="pets_quais"
+               placeholder="Se sim, quais?" class="pets-extra">
+      </div>
+
+      <div class="field">
+        <label for="rotina">Rotina dos moradores</label>
+        <textarea id="rotina" name="rotina" placeholder="Horários, hábitos, home office, etc."></textarea>
+      </div>
+
+      <div class="field">
+        <label>Haverá necessidade de acessibilidade?</label>
+        <div class="options-row" role="group" aria-label="Necessidade de acessibilidade?">
+          <label class="opt"><input type="radio" name="acessibilidade" value="Sim"><span class="box"></span><span>Sim</span></label>
+          <label class="opt"><input type="radio" name="acessibilidade" value="Não"><span class="box"></span><span>Não</span></label>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── 03 INFORMAÇÕES GERAIS ─────────────────────────── -->
+    <div class="section">
+      <div class="section-header">
+        <span class="section-num">03</span>
+        <span class="section-title">Informações Gerais do Projeto</span>
+      </div>
+
+      <div class="field">
+        <label>Tipo de imóvel</label>
+        <div class="options-row" role="group" aria-label="Tipo de imóvel">
+          <label class="opt"><input type="radio" name="tipo_imovel" value="Residencial"><span class="box"></span><span>Residencial</span></label>
+          <label class="opt"><input type="radio" name="tipo_imovel" value="Comercial"><span class="box"></span><span>Comercial</span></label>
+          <label class="opt"><input type="radio" name="tipo_imovel" value="Apartamento"><span class="box"></span><span>Apartamento</span></label>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>O imóvel é</label>
+        <div class="options-row" role="group" aria-label="O imóvel é próprio ou alugado?">
+          <label class="opt"><input type="radio" name="imovel_proprio" value="Próprio"><span class="box"></span><span>Próprio</span></label>
+          <label class="opt"><input type="radio" name="imovel_proprio" value="Alugado"><span class="box"></span><span>Alugado</span></label>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── 04 OBJETIVOS DO PROJETO ───────────────────────── -->
+    <div class="section">
+      <div class="section-header">
+        <span class="section-num">04</span>
+        <span class="section-title">Objetivos do Projeto</span>
+      </div>
+
+      <div class="field">
+        <label>Principal objetivo do projeto</label>
+        <div class="options-row" role="group" aria-label="Objetivos do projeto">
+          <label class="opt"><input type="checkbox" name="objetivo[]" value="Estética"><span class="box"></span><span>Estética</span></label>
+          <label class="opt"><input type="checkbox" name="objetivo[]" value="Funcionalidade"><span class="box"></span><span>Funcionalidade</span></label>
+          <label class="opt"><input type="checkbox" name="objetivo[]" value="Valorização do imóvel"><span class="box"></span><span>Valorização do imóvel</span></label>
+          <label class="opt"><input type="checkbox" name="objetivo[]" value="Conforto"><span class="box"></span><span>Conforto</span></label>
+          <!-- FIX: !important removido — resolvido com especificidade .outro-inline.opt -->
+          <label class="opt outro-inline">
+            <input type="checkbox" name="objetivo[]" value="Outro"><span class="box"></span><span>Outro:</span>
+            <input type="text" name="objetivo_outro" placeholder="descreva...">
+          </label>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="transformar">O que deseja transformar ou melhorar no espaço?</label>
+        <textarea id="transformar" name="transformar" placeholder="Descreva livremente..."></textarea>
+      </div>
+
+      <div class="field">
+        <label for="estilo">Estilo que mais lhe agrada</label>
+        <input type="text" id="estilo" name="estilo" placeholder="Ex: moderno, contemporâneo, minimalista, rústico...">
+      </div>
+
+      <div class="field">
+        <label for="referencias">Referências visuais</label>
+        <input type="text" id="referencias" name="referencias" placeholder="Links do Pinterest, Instagram, etc.">
+      </div>
+
+      <div class="field">
+        <label for="nao_gosta">O que você NÃO gosta?</label>
+        <textarea id="nao_gosta" name="nao_gosta" placeholder="Estilos, elementos, acabamentos que prefere evitar..."></textarea>
+      </div>
+
+      <div class="grid-2">
+        <div class="field">
+          <label for="cores_gosta">Cores que gosta</label>
+          <input type="text" id="cores_gosta" name="cores_gosta" placeholder="Ex: tons neutros, verde musgo...">
+        </div>
+        <div class="field">
+          <label for="cores_nao_gosta">Cores que não gosta</label>
+          <input type="text" id="cores_nao_gosta" name="cores_nao_gosta" placeholder="Ex: amarelo, laranja intenso...">
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="materiais">Preferências de materiais</label>
+        <input type="text" id="materiais" name="materiais" placeholder="Ex: madeira, mármore, cimento queimado...">
+      </div>
+
+      <div class="field">
+        <label for="resultado_ideal">Resultado ideal deste projeto para você</label>
+        <textarea id="resultado_ideal" name="resultado_ideal" placeholder="Como você imagina o espaço ao final do projeto?"></textarea>
+      </div>
+    </div>
+
+    <!-- ── 05 MOBILIÁRIO & EQUIPAMENTOS ──────────────────── -->
+    <div class="section">
+      <div class="section-header">
+        <span class="section-num">05</span>
+        <span class="section-title">Mobiliário &amp; Equipamentos</span>
+      </div>
+
+      <div class="field">
+        <label for="moveis_manter">Deseja manter algum móvel existente? Quais?</label>
+        <textarea id="moveis_manter" name="moveis_manter" placeholder="Descreva os móveis que deseja conservar e sua localização..."></textarea>
+      </div>
+
+      <div class="field">
+        <label>Precisa de móveis planejados?</label>
+        <div class="options-row" role="group" aria-label="Precisa de móveis planejados?">
+          <label class="opt"><input type="radio" name="moveis_planejados" value="Sim"><span class="box"></span><span>Sim</span></label>
+          <label class="opt"><input type="radio" name="moveis_planejados" value="Não"><span class="box"></span><span>Não</span></label>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="eletrodomesticos">Eletrodomésticos / Equipamentos a considerar</label>
+        <textarea id="eletrodomesticos" name="eletrodomesticos" placeholder="Ex: geladeira side by side, adega, TV 85'', piano..."></textarea>
+      </div>
+    </div>
+
+    <!-- ── 06 ILUMINAÇÃO ─────────────────────────────────── -->
+    <div class="section">
+      <div class="section-header">
+        <span class="section-num">06</span>
+        <span class="section-title">Iluminação</span>
+      </div>
+
+      <div class="field">
+        <label>Prefere ambientes</label>
+        <div class="options-row" role="group" aria-label="Preferência de iluminação">
+          <label class="opt"><input type="radio" name="iluminacao_tipo" value="Claros (luz direta)"><span class="box"></span><span>Claros (luz direta)</span></label>
+          <label class="opt"><input type="radio" name="iluminacao_tipo" value="Aconchegantes (luz indireta)"><span class="box"></span><span>Aconchegantes (luz indireta)</span></label>
+          <label class="opt"><input type="radio" name="iluminacao_tipo" value="Misto"><span class="box"></span><span>Misto</span></label>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="iluminacao_especifica">Necessidades de iluminação específica</label>
+        <input type="text" id="iluminacao_especifica" name="iluminacao_especifica"
+               placeholder="Ex: leitura, home office, destaque em obras...">
+      </div>
+    </div>
+
+    <div class="divider" aria-hidden="true"></div>
+
+    <div class="submit-area">
+      <p class="submit-note">
+        Ao enviar, suas informações serão<br>
+        encaminhadas diretamente ao escritório.
+      </p>
+      <button type="submit">
+        <!-- FIX: span com classe explícita — seletor JS não depende mais de :first-child -->
+        <span class="btn-label">Enviar Briefing</span>
+        <span class="btn-arrow" aria-hidden="true">→</span>
+      </button>
+    </div>
+
+    <div class="success-msg" id="successMsg" role="alert">
+      <h3>Briefing recebido com sucesso</h3>
+      <p>Entraremos em contato em breve. Obrigado pela confiança.</p>
+    </div>
+
+  </form>
+</main>
+
+<footer>© Juan Esquivel Arquitetura & Interiores — Salvador, BA</footer>
+
+<script>
+  // Espelha o e-mail digitado no campo _replyto do Formspree
+  document.getElementById('email').addEventListener('input', function () {
+    document.getElementById('replyEmail').value = this.value;
+  });
+
+  // Envio via fetch (sem reload de página)
+  const form = document.getElementById('briefingForm');
+
+  form.addEventListener('submit', async function (e) {
+    e.preventDefault();
+
+    const btn   = form.querySelector('button[type="submit"]');
+    // FIX: seletor usa classe explícita .btn-label — robusto a mudanças no HTML
+    const label = btn.querySelector('.btn-label');
+
+    label.textContent = 'Enviando…';
+    btn.disabled = true;
+
+    try {
+      const res = await fetch(form.action, {
+        method:  'POST',
+        body:    new FormData(form),
+        headers: { 'Accept': 'application/json' }
+      });
+
+      if (res.ok) {
+        form.style.transition = 'opacity 0.4s';
+        form.style.opacity    = '0';
+        setTimeout(() => {
+          form.style.display = 'none';
+          const msg = document.getElementById('successMsg');
+          msg.style.display   = 'block';
+          msg.style.animation = 'fadeUp 0.5s ease both';
+        }, 400);
+      } else {
+        label.textContent = 'Erro ao enviar. Tente novamente.';
+        btn.disabled = false;
+      }
+    } catch {
+      label.textContent = 'Erro de conexão. Tente novamente.';
+      btn.disabled = false;
+    }
+  });
+</script>
+
 </body>
 </html>
